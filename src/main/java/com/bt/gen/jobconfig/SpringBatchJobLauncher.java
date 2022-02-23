@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+//@Component
 public class SpringBatchJobLauncher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBatchJobLauncher.class);

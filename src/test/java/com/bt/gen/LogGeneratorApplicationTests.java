@@ -86,7 +86,6 @@ class LogGeneratorApplicationTests {
 	private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	@Ignore
-	@Test
 	void contextLoads() throws JsonProcessingException {
 
 		//ApiResponse response = mapper.readValue(json, ApiResponse.class);

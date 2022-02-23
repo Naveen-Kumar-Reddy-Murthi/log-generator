@@ -1,38 +1,37 @@
 package com.bt.gen;
 
+import com.bt.gen.service.LogGenService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.client.RestTemplate;
 
 
 @Slf4j
 @SpringBootApplication
-@EnableBatchProcessing
-@EnableScheduling
+/*@EnableBatchProcessing
+@EnableScheduling*/
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-public class LogGeneratorApplication {
-
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
-
-	@Bean
-	public ObjectMapper getMapper() {
-		return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-	}
+public class LogGeneratorApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LogGeneratorApplication.class, args);
 	}
 
+	@Autowired
+	public LogGenService logGenService;
+
+	@Override
+	public void run(String... args) throws Exception {
+		log.info("\n ************ Job started ************ \n");
+		logGenService.retrieveLogs();
+		log.info("\n ************ Job Completed ************ \n");
+		System.exit(-1);
+	}
 }

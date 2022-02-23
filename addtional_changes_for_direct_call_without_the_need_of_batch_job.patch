@@ -1,0 +1,144 @@
+Index: src/main/java/com/bt/gen/jobconfig/CommonBeanConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/bt/gen/jobconfig/CommonBeanConfig.java b/src/main/java/com/bt/gen/jobconfig/CommonBeanConfig.java
+new file mode 100644
+--- /dev/null	(date 1645607924879)
++++ b/src/main/java/com/bt/gen/jobconfig/CommonBeanConfig.java	(date 1645607924879)
+@@ -0,0 +1,21 @@
++package com.bt.gen.jobconfig;
++
++import com.fasterxml.jackson.databind.DeserializationFeature;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.web.client.RestTemplate;
++
++@Configuration
++public class CommonBeanConfig {
++
++    @Bean
++    public RestTemplate getRestTemplate() {
++        return new RestTemplate();
++    }
++
++    @Bean
++    public ObjectMapper getMapper() {
++        return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
++    }
++}
+Index: src/main/java/com/bt/gen/jobconfig/SpringBatchJobLauncher.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/bt/gen/jobconfig/SpringBatchJobLauncher.java b/src/main/java/com/bt/gen/jobconfig/SpringBatchJobLauncher.java
+--- a/src/main/java/com/bt/gen/jobconfig/SpringBatchJobLauncher.java	(revision 56df163227e1a8dcc82cd6e92f8eaf4e3e4e3676)
++++ b/src/main/java/com/bt/gen/jobconfig/SpringBatchJobLauncher.java	(date 1645607410530)
+@@ -18,7 +18,7 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+-@Component
++//@Component
+ public class SpringBatchJobLauncher {
+ 
+     private static final Logger LOGGER = LoggerFactory.getLogger(SpringBatchJobLauncher.class);
+Index: src/test/java/com/bt/gen/LogGeneratorApplicationTests.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/bt/gen/LogGeneratorApplicationTests.java b/src/test/java/com/bt/gen/LogGeneratorApplicationTests.java
+--- a/src/test/java/com/bt/gen/LogGeneratorApplicationTests.java	(revision 56df163227e1a8dcc82cd6e92f8eaf4e3e4e3676)
++++ b/src/test/java/com/bt/gen/LogGeneratorApplicationTests.java	(date 1645608152286)
+@@ -86,7 +86,6 @@
+ 	private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+ 
+ 	@Ignore
+-	@Test
+ 	void contextLoads() throws JsonProcessingException {
+ 
+ 		//ApiResponse response = mapper.readValue(json, ApiResponse.class);
+Index: src/main/java/com/bt/gen/LogGeneratorApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/bt/gen/LogGeneratorApplication.java b/src/main/java/com/bt/gen/LogGeneratorApplication.java
+--- a/src/main/java/com/bt/gen/LogGeneratorApplication.java	(revision 56df163227e1a8dcc82cd6e92f8eaf4e3e4e3676)
++++ b/src/main/java/com/bt/gen/LogGeneratorApplication.java	(date 1645607935959)
+@@ -1,38 +1,37 @@
+ package com.bt.gen;
+ 
++import com.bt.gen.service.LogGenService;
+ import com.fasterxml.jackson.databind.DeserializationFeature;
+ import com.fasterxml.jackson.databind.ObjectMapper;
+ import lombok.extern.slf4j.Slf4j;
+ import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.CommandLineRunner;
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
+ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+-import org.springframework.context.annotation.Bean;
+-
+-import org.springframework.scheduling.annotation.EnableScheduling;
+-import org.springframework.web.client.RestTemplate;
+ 
+ 
+ @Slf4j
+ @SpringBootApplication
+-@EnableBatchProcessing
+-@EnableScheduling
++/*@EnableBatchProcessing
++@EnableScheduling*/
+ @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
+-public class LogGeneratorApplication {
+-
+-	@Bean
+-	public RestTemplate getRestTemplate() {
+-		return new RestTemplate();
+-	}
+-
+-	@Bean
+-	public ObjectMapper getMapper() {
+-		return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+-	}
++public class LogGeneratorApplication implements CommandLineRunner {
+ 
+ 	public static void main(String[] args) {
+ 		SpringApplication.run(LogGeneratorApplication.class, args);
+ 	}
+ 
++	@Autowired
++	public LogGenService logGenService;
++
++	@Override
++	public void run(String... args) throws Exception {
++		log.info("\n ************ Job started ************ \n");
++		logGenService.retrieveLogs();
++		log.info("\n ************ Job Completed ************ \n");
++		System.exit(-1);
++	}
+ }
+Index: src/main/java/com/bt/gen/jobconfig/SpringBatchJobConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/bt/gen/jobconfig/SpringBatchJobConfig.java b/src/main/java/com/bt/gen/jobconfig/SpringBatchJobConfig.java
+--- a/src/main/java/com/bt/gen/jobconfig/SpringBatchJobConfig.java	(revision 56df163227e1a8dcc82cd6e92f8eaf4e3e4e3676)
++++ b/src/main/java/com/bt/gen/jobconfig/SpringBatchJobConfig.java	(date 1645607410546)
+@@ -15,7 +15,7 @@
+ import org.springframework.core.env.Environment;
+ import org.springframework.web.client.RestTemplate;
+ 
+-@Configuration
++//@Configuration
+ public class SpringBatchJobConfig {
+     @Bean
+     public Step logGenJobStep(ItemReader<ApiResponse> reader,
