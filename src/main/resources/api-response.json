@@ -1,0 +1,61 @@
+{
+  "code": "RESPONSE_SUCCESS",
+  "data": {
+    "actor": {
+      "objectType": "person",
+      "org_id": "P4C4k",
+      "user_id": "UUG1234",
+      "email": "test123@gmail.com",
+      "user_type": "Internal",
+      "phone_umber": "",
+      "name": "",
+      "roles": [
+        {
+          "role_id": 4,
+          "role_name": "Internal",
+          "role_type": "ROlE_TYPE_NORMAL"
+        }
+      ],
+      "is_admin": true,
+      "display_id": "",
+      "is_deleted": true,
+      "disabled": true
+    },
+    "activities": [
+      {
+        "objectType": "user",
+        "action_group_id": "USER_MANAGEMENT",
+        "action_type_id": "USER_DELETED",
+        "client_public_ip": "10.4.8.13",
+        "client_version": "7002001",
+        "platform": "web",
+        "browser": "Chrome",
+        "device_model": "Windows",
+        "created_time": 16114248618267,
+        "published": "2021-02-25T10:23:38Z",
+        "users": [
+          {
+            "name": "RK"
+          }
+        ]
+      },
+      {
+        "objectType": "user",
+        "action_group_id": "USER_MANAGEMENT",
+        "action_type_id": "USER_CREATED",
+        "client_public_ip": "10.4.8.13",
+        "client_version": "7002001",
+        "platform": "web",
+        "browser": "Chrome",
+        "device_model": "Windows",
+        "created_time": 16114248618267,
+        "published": "2021-02-25T10:23:38Z",
+        "users": [
+          {
+            "name": "DRK"
+          }
+        ]
+      }
+    ]
+  }
+}
