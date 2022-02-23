@@ -34,9 +34,9 @@ public class SpringBatchJobLauncher {
 
     @Scheduled(cron = "0 0/10 * * * ?")
     public void runJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        LOGGER.info("Job started");
+        LOGGER.info("\n ************ Job started ************ \n");
         jobLauncher.run(job, newExecution());
-        LOGGER.info("Job Completed");
+        LOGGER.info("\n ************ Job Completed ************ \n");
     }
 
     private JobParameters newExecution() {

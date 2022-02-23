@@ -15,9 +15,9 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Slf4j
-@EnableScheduling
 @SpringBootApplication
 @EnableBatchProcessing
+@EnableScheduling
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class LogGeneratorApplication {
 
