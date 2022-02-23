@@ -9,7 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 @SpringBootTest
 class LogGeneratorApplicationTests {
@@ -91,6 +95,10 @@ class LogGeneratorApplicationTests {
 		String dateFormat = "ddMMyyyhhmmss";
 		String logFile = "AppName-siem-"+ DateTimeFormatter.ofPattern(dateFormat).format(LocalDateTime.now())+".log";
 		System.out.println(logFile);
+		//2021-02-25T00:00:00Z
+
+		System.out.println( new Date());
+		System.out.println(System.getProperty("java.io.tmpdir"));
 
 	}
 

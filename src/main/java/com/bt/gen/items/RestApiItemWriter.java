@@ -55,7 +55,6 @@ public class RestApiItemWriter implements ItemWriter<ApiResponse> {
                         logs.add(userId);
                         logs.add(activity.getClientPublicIp());
                         logs.add(activity.getClientPublicIp());
-                        System.out.println(logs.toString());
                         logFileWriter.write(logs.toString());
                     }
                 }

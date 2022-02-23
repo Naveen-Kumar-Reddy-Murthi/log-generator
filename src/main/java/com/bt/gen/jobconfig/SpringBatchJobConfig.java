@@ -17,26 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class SpringBatchJobConfig {
-
-    /*private static final String PROPERTY_REST_API_URL = "rest.api.url";
-
-    @Bean
-    public ItemReader<ApiResponse> itemReader(Environment environment, RestTemplate restTemplate) {
-        return new RestApiItemReader(*//*environment.getRequiredProperty(PROPERTY_REST_API_URL), restTemplate*//*);
-    }
-
-    @Bean
-    public ItemWriter<ApiResponse> itemWriter() {
-        return new RestApiItemWriter();
-    }*/
-
-    /**
-     * Creates a bean that represents the only step of our batch job.
-     * @param reader
-     * @param writer
-     * @param stepBuilderFactory
-     * @return
-     */
     @Bean
     public Step logGenJobStep(ItemReader<ApiResponse> reader,
                                ItemWriter<ApiResponse> writer,
@@ -48,12 +28,6 @@ public class SpringBatchJobConfig {
                 .build();
     }
 
-    /**
-     * Creates a bean that represents our batch job.
-     * @param logGenJobStep
-     * @param jobBuilderFactory
-     * @return
-     */
     @Bean
     public Job logGenJob(Step logGenJobStep,
                           JobBuilderFactory jobBuilderFactory) {

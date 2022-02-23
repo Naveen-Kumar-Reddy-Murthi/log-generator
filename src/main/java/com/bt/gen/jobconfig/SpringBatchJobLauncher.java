@@ -32,13 +32,11 @@ public class SpringBatchJobLauncher {
         this.jobLauncher = jobLauncher;
     }
 
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void runJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        LOGGER.info("Spring Batch example job was started");
-
+        LOGGER.info("Job started");
         jobLauncher.run(job, newExecution());
-
-        LOGGER.info("Spring Batch example job was stopped");
+        LOGGER.info("Job Completed");
     }
 
     private JobParameters newExecution() {
