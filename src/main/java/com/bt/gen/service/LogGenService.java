@@ -101,10 +101,14 @@ public class LogGenService {
         final HttpEntity<ApiRequest> entity = new HttpEntity<>(request, headers);
         ResponseEntity<ApiResponse> response = restTemplate.exchange(auditApiUrl, HttpMethod.POST, entity, ApiResponse.class);
 
-        if(null != response) {
+        if(null != response && null != response.getBody()) {
             log.info(response.getStatusCode().toString());
             log.info(Objects.requireNonNull(response.getBody()).toString());
             return response.getBody();
+        }else{
+            if(null != response){
+                log.warn(response.getStatusCode().toString());
+            }
         }
         return null;
 

@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.TestConfiguration;
@@ -21,7 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.UUID;
@@ -30,14 +27,6 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 public class LogGenServiceTest {
-
-    private static final String AUDIT_API_URL = "AUDIT_API_URL";
-    private static final String CLIENT_ID = "CLIENT_ID";
-    private static final String CLIENT_SECRET = "CLIENT_SECRET";
-    private static final String EMAIL = "EMAIL";
-    private static final String ORG_ID = "ORG_ID";
-    private static final String TOKEN_API_URL = "TOKEN_API_URL";
-    private static final String LOG_FILE_PATH = "LOG_FILE_PATH";
 
     @MockBean
     private RestTemplate restTemplate;
@@ -64,8 +53,7 @@ public class LogGenServiceTest {
 
 
     @Test
-    public void testRetrieveLogs() throws Exception {
-        RestTemplate objRestTemplate = mock(RestTemplate.class);
+    public void testRetrieveLogsHappyPath() throws Exception {
         ReflectionTestUtils.setField(underTest, "tokenApiUrl", tokenApiUrl);
         ReflectionTestUtils.setField(underTest, "clientId", clientId);
         ReflectionTestUtils.setField(underTest, "clientSecret", clientSecret);
@@ -73,8 +61,9 @@ public class LogGenServiceTest {
         ReflectionTestUtils.setField(underTest, "orgId", orgId);
         ReflectionTestUtils.setField(underTest, "auditApiUrl", auditApiUrl);
         ReflectionTestUtils.setField(underTest, "logFilePath", logFilePath);
+        String token = UUID.randomUUID().toString();
         tokenResponse = TokenResponse.builder()
-                .accessToken(UUID.randomUUID().toString())
+                .accessToken(token)
                 .expiresIn(Date.from(Instant.now().plusMillis(50000)).toInstant().toEpochMilli()).build();
         apiResponse = mapper.readValue(dummy, ApiResponse.class);
         UserManagement userManagement = UserManagement.builder().allExceptPresenceUpdated(true).build();
@@ -85,18 +74,45 @@ public class LogGenServiceTest {
         headers.set("Authorization", tokenResponse.getAccessToken());
         final HttpEntity<ApiRequest> entity = new HttpEntity<>(apiRequest, headers);
 
-       /* doReturn(ResponseEntity.ok(apiResponse)).
-                when(restTemplate).exchange("http://localhost:8080/oauth/v1/core/token", HttpMethod.POST, entity, ApiResponse.class);*/
-
         doReturn(ResponseEntity.ok(apiResponse)).
-                when(restTemplate).exchange(any(), any(), any(), (Class<Object>) any(Object.class));
-
+                when(restTemplate).exchange(auditApiUrl, HttpMethod.POST, entity, ApiResponse.class);
 
         underTest.retrieveLogs();
         verify(restTemplate, times(1))
                 .postForObject(any(), any(), any());
         verify(restTemplate, times(1))
-                .exchange(any(), any(), any(), (Class<Object>) any(Object.class));
+                .exchange(auditApiUrl, HttpMethod.POST, entity, ApiResponse.class);
+    }
+
+    @Test
+    public void testRetrieveLogsUnHappyPath() throws Exception {
+        ReflectionTestUtils.setField(underTest, "tokenApiUrl", tokenApiUrl);
+        ReflectionTestUtils.setField(underTest, "clientId", clientId);
+        ReflectionTestUtils.setField(underTest, "clientSecret", clientSecret);
+        ReflectionTestUtils.setField(underTest, "email", email);
+        ReflectionTestUtils.setField(underTest, "orgId", orgId);
+        ReflectionTestUtils.setField(underTest, "auditApiUrl", auditApiUrl);
+        ReflectionTestUtils.setField(underTest, "logFilePath", logFilePath);
+        String token = UUID.randomUUID().toString();
+        tokenResponse = TokenResponse.builder()
+                .accessToken(token)
+                .expiresIn(Date.from(Instant.now().plusMillis(50000)).toInstant().toEpochMilli()).build();
+        UserManagement userManagement = UserManagement.builder().allExceptPresenceUpdated(true).build();
+        ActionTypes actionTypes = ActionTypes.builder().userManagement(userManagement).build();
+        apiRequest = ApiRequest.builder().starts("2021-02-25T00:00:00Z").actionTypes(actionTypes).build();
+        doReturn(tokenResponse).when(restTemplate).postForObject(any(), any(), any());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", tokenResponse.getAccessToken());
+        final HttpEntity<ApiRequest> entity = new HttpEntity<>(apiRequest, headers);
+
+        doReturn(ResponseEntity.notFound().build()).
+                when(restTemplate).exchange(auditApiUrl, HttpMethod.POST, entity, ApiResponse.class);
+
+        underTest.retrieveLogs();
+        verify(restTemplate, times(1))
+                .postForObject(any(), any(), any());
+        verify(restTemplate, times(1))
+                .exchange(auditApiUrl, HttpMethod.POST, entity, ApiResponse.class);
     }
 
     private static final String dummy = "{\n" +
@@ -160,59 +176,6 @@ public class LogGenServiceTest {
             "    ]\n" +
             "  }\n" +
             "}";
-
-    @Test
-    public void testCreateLogFile() throws Exception {
-
-        /*try {
-            Method method = LogGenService.getClass().getMethod("createLogFile", ApiResponse.class);
-            method.setAccessible(true);
-            method.invoke( < Object >, <Parameters >);
-        } catch (NoSuchMethodException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }*/
-    }
-
-    @Test
-    public void testGetApiResponse() throws Exception {
-        /*try {
-            Method method = LogGenService.getClass().getMethod("getApiResponse", TokenResponse.class, ApiRequest.class);
-            method.setAccessible(true);
-            method.invoke( < Object >, <Parameters >);
-        } catch (NoSuchMethodException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }*/
-    }
-
-
-    @Test
-    public void testGetTokenResponse() throws Exception {
-
-        /*try {
-            Method method = LogGenService.getClass().getMethod("getTokenResponse");
-            method.setAccessible(true);
-            method.invoke( < Object >, <Parameters >);
-        } catch (NoSuchMethodException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }*/
-    }
-
-
-    @Test
-    public void testCreateAPIRequest() throws Exception {
-
-       /* try {
-            Method method = LogGenService.getClass().getMethod("createAPIRequest");
-            method.setAccessible(true);
-            method.invoke( < Object >, <Parameters >);
-        } catch (NoSuchMethodException e) {
-        } catch (IllegalAccessException e) {
-        } catch (InvocationTargetException e) {
-        }*/
-    }
 
     @TestConfiguration
     static class LogGenServiceTestContextConfiguration {
