@@ -18,6 +18,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 @Slf4j
@@ -99,9 +100,13 @@ public class LogGenService {
         headers.set("Authorization", tokenResponse.getAccessToken());
         final HttpEntity<ApiRequest> entity = new HttpEntity<>(request, headers);
         ResponseEntity<ApiResponse> response = restTemplate.exchange(auditApiUrl, HttpMethod.POST, entity, ApiResponse.class);
-        log.info(response.getStatusCode().toString());
-        log.info(response.getBody().toString());
-        return response.getBody();
+
+        if(null != response) {
+            log.info(response.getStatusCode().toString());
+            log.info(Objects.requireNonNull(response.getBody()).toString());
+            return response.getBody();
+        }
+        return null;
 
     }
 

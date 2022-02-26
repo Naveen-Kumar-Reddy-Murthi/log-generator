@@ -1,10 +1,7 @@
 package com.bt.gen;
 
 import com.bt.gen.service.LogGenService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,8 +12,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @Slf4j
 @SpringBootApplication
-/*@EnableBatchProcessing
-@EnableScheduling*/
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 public class LogGeneratorApplication implements CommandLineRunner {
 

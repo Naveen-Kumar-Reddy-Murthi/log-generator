@@ -1,4 +1,4 @@
-package com.bt.gen.jobconfig;
+package com.bt.gen.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
